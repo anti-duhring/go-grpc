@@ -1,4 +1,4 @@
-generate_grpc_code:
+generate_grpc:
 	protoc \
 	--go_out=. \
 	--go_opt=paths=source_relative \
@@ -6,8 +6,8 @@ generate_grpc_code:
 	--go-grpc_opt=paths=source_relative \
 	internal/invoicer/invoicer.proto
 
-run_gateway:
+gateway:
 	go run cmd/gateway/main.go
 
-run_ecommerce:
+ecommerce:
 	go run cmd/ecommerce/main.go
