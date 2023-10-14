@@ -5,6 +5,7 @@ import (
 	"net"
 	"os"
 
+	grpcserver "github.com/anti-duhring/go-grpc/internal/grpc_server"
 	"github.com/anti-duhring/go-grpc/internal/invoicer"
 	"google.golang.org/grpc"
 )
@@ -32,6 +33,12 @@ func main() {
 	err = registrar.Serve(listener)
 	if err != nil {
 		fmt.Printf("cannot start server: %s", err)
+		panic(err)
+	}
+
+	err = grpcserver.Initialize()
+	if err != nil {
+		fmt.Printf("cannot initialize database: %s", err)
 		panic(err)
 	}
 }

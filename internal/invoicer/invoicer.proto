@@ -13,8 +13,8 @@ message CreateRequest {
 }
 
 message CreateResponse {
-    bytes pdf = 1;
-    bytes docx = 2;
+    int64 fromAmount = 1;
+    int64 toAmount = 2;
 }
 
 service Invoicer {

@@ -1,40 +1,28 @@
 package main
 
 import (
-	"fmt"
 	"os"
 	"time"
 
 	"github.com/anti-duhring/go-grpc/internal/db"
+	"github.com/anti-duhring/go-grpc/internal/grpc_client"
 	"github.com/anti-duhring/go-grpc/internal/http"
 	"github.com/gin-gonic/gin"
-	"google.golang.org/grpc"
-	"google.golang.org/grpc/credentials/insecure"
-)
-
-var (
-	Conn *grpc.ClientConn
 )
 
 func main() {
-	gatewayPort := os.Getenv("GATEWAY_PORT")
-
-	if gatewayPort == "" {
-		gatewayPort = "8089"
-	}
-
-	Conn, err := grpc.Dial("gateway:"+gatewayPort, grpc.WithTransportCredentials(insecure.NewCredentials()))
+	err := grpc_client.Initialize()
 
 	if err != nil {
-		fmt.Printf("could not connect: %s", err)
+		panic(err)
 	}
-	defer Conn.Close()
+
+	defer grpc_client.Conn.Close()
 
 	time.Sleep(5 * time.Second) // Database on compose
-	db.Initialize()
+	err = db.Initialize()
 
 	if err != nil {
-		fmt.Printf("could not initialize db: %s", err)
 		panic(err)
 	}
 

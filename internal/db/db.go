@@ -1,6 +1,7 @@
 package db
 
 import (
+	"fmt"
 	"os"
 
 	"github.com/anti-duhring/go-grpc/internal/schema"
@@ -17,6 +18,7 @@ func Initialize() error {
 	Client, err = gorm.Open(postgres.Open(dsn), &gorm.Config{TranslateError: true})
 
 	if err != nil {
+		fmt.Printf("error opening database: %v\n", err)
 		return err
 	}
 
