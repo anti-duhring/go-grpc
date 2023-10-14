@@ -8,16 +8,20 @@ import (
 	"gorm.io/gorm"
 )
 
-func Initialize() (*gorm.DB, error) {
+var Client *gorm.DB
+
+func Initialize() error {
 	dsn := os.Getenv("DATABASE_URL")
-	db, err := gorm.Open(postgres.Open(dsn), &gorm.Config{TranslateError: true})
+
+	var err error
+	Client, err = gorm.Open(postgres.Open(dsn), &gorm.Config{TranslateError: true})
 
 	if err != nil {
-		return nil, err
+		return err
 	}
 
-	db.AutoMigrate(&schema.User{})
-	db.AutoMigrate(&schema.Wallet{})
+	Client.AutoMigrate(&schema.User{})
+	Client.AutoMigrate(&schema.Wallet{})
 
-	return db, nil
+	return nil
 }
