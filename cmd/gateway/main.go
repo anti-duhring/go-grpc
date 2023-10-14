@@ -2,18 +2,25 @@ package main
 
 import (
 	"fmt"
-	"log"
 	"net"
+	"os"
 
 	"github.com/anti-duhring/go-grpc/internal/invoicer"
 	"google.golang.org/grpc"
 )
 
 func main() {
-	port := ":8089"
-	listener, err := net.Listen("tcp", port)
+	portEnv := os.Getenv("API_PORT")
+	port := portEnv
+
+	if portEnv == "" {
+		port = "8089"
+	}
+
+	listener, err := net.Listen("tcp", ":"+port)
 	if err != nil {
-		log.Fatalf("cannot create listener: %s", err)
+		fmt.Printf("cannot create listener: %s", err)
+		panic(err)
 	}
 
 	registrar := grpc.NewServer()
@@ -24,6 +31,7 @@ func main() {
 
 	err = registrar.Serve(listener)
 	if err != nil {
-		log.Fatalf("cannot start server: %s", err)
+		fmt.Printf("cannot start server: %s", err)
+		panic(err)
 	}
 }

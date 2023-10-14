@@ -1,0 +1,47 @@
+version: '3.9'
+services:
+  ecommerce:
+    build:
+      context: .
+      dockerfile: Dockerfile.ecommerce
+    hostname: ecommerce
+    depends_on:
+      - db
+      - gateway
+    restart: on-failure
+    environment:
+      API_PORT: 80
+      GATEWAY_PORT: 8089
+      DATABASE_URL: postgres://postgres:postgres@db:5432/postgres
+    networks:
+      - g-network
+  
+  gateway:
+    build: 
+      context: .
+      dockerfile: Dockerfile.gateway
+    hostname: gateway
+    depends_on:
+      - db
+    restart: on-failure
+    ports:
+      - "8089:8089"
+    environment:
+      API_PORT: 8089
+      DATABASE_URL: postgres://postgres:postgres@db:5432/postgres
+    networks:
+      - g-network
+  
+  db:
+    image: postgres
+    hostname: db
+    environment:
+      POSTGRES_USER: postgres
+      POSTGRES_PASSWORD: postgres
+    ports:
+      - 5432:5432
+    networks:
+      - g-network
+  
+networks:
+  g-network:
