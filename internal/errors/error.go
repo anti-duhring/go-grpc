@@ -22,3 +22,7 @@ func New(code int, message string) Error {
 		err:     fmt.Errorf(message),
 	}
 }
+
+func Is(err Error, code int) bool {
+	return err.Code == code
+}

@@ -127,23 +127,21 @@ func TransferMoney(c *gin.Context) {
 		return
 	}
 
-	// inv := invoicer.NewInvoicerClient(grpc_client.Conn)
+	w := wallet.NewWalletServiceClient(grpc_client.Conn)
 
-	// message := invoicer.CreateRequest{
-	// 	From: from,
-	// 	To:   request.To.String(),
-	// 	Amount: &invoicer.Amount{
-	// 		Amount:   int64(request.Amount),
-	// 		Currency: "USD",
-	// 	},
-	// }
+	message := wallet.TransferRequest{
+		From:   from,
+		To:     request.To.String(),
+		Amount: float32(request.Amount),
+	}
 
-	// res, err := inv.Create(context.Background(), &message)
+	res, err := w.Transfer(context.Background(), &message)
 
-	// if err != nil {
-	// 	sendError(c, http.StatusInternalServerError, err.Error())
-	// }
+	if err != nil {
+		sendError(c, http.StatusInternalServerError, err.Error())
+		return
+	}
 
-	sendSuccess(c, http.StatusOK, nil)
+	sendSuccess(c, http.StatusOK, res)
 
 }

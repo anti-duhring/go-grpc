@@ -19,7 +19,7 @@ message CreateResponse {
 message TransferRequest {
     string from = 1;
     string to = 2;
-    string amount = 3;
+    float amount = 3;
     string currency = 4;
 }
 
