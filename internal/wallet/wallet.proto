@@ -1,0 +1,33 @@
+syntax = "proto3";
+option go_package = "github.com/anti-duhring/go-grpc/wallet";
+
+message Wallet {
+    string id = 1;
+    float balance = 2;
+    string currency = 3;
+}
+
+message CreateRequest {
+    string userId = 1;
+}
+
+message CreateResponse {
+    string userId = 1;
+    Wallet wallet = 2;
+}
+
+message TransferRequest {
+    string from = 1;
+    string to = 2;
+    string amount = 3;
+    string currency = 4;
+}
+
+message TransferResponse {
+    string status = 1;
+}
+
+service WalletService {
+    rpc Create(CreateRequest) returns (CreateResponse);
+    rpc Transfer(TransferRequest) returns (TransferResponse);
+}

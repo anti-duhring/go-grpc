@@ -7,8 +7,8 @@ import (
 	"github.com/anti-duhring/go-grpc/internal/db"
 	"github.com/anti-duhring/go-grpc/internal/errors"
 	"github.com/anti-duhring/go-grpc/internal/grpc_client"
-	"github.com/anti-duhring/go-grpc/internal/invoicer"
 	"github.com/anti-duhring/go-grpc/internal/schema"
+	"github.com/anti-duhring/go-grpc/internal/wallet"
 	"github.com/gin-gonic/gin"
 	"github.com/google/uuid"
 )
@@ -73,17 +73,32 @@ func CreateUser(c *gin.Context) {
 		return
 	}
 
-	wallet := schema.Wallet{}
+	userId := uuid.New()
+	w := wallet.NewWalletServiceClient(grpc_client.Conn)
 
-	if err := db.Client.Create(&wallet).Error; err != nil {
+	message := wallet.CreateRequest{
+		UserId: userId.String(),
+	}
+
+	res, err := w.Create(context.Background(), &message)
+
+	if err != nil {
+		sendError(c, http.StatusInternalServerError, err.Error())
+		return
+	}
+
+	walletId, err := uuid.Parse(res.Wallet.Id)
+
+	if err != nil {
 		sendError(c, http.StatusInternalServerError, err.Error())
 		return
 	}
 
 	user := schema.User{
 		Name:     request.Name,
-		WalletID: wallet.ID,
+		WalletID: walletId,
 	}
+	user.ID = userId
 
 	if err := db.Client.Create(&user).Error; err != nil {
 		sendError(c, http.StatusInternalServerError, err.Error())
@@ -112,23 +127,23 @@ func TransferMoney(c *gin.Context) {
 		return
 	}
 
-	inv := invoicer.NewInvoicerClient(grpc_client.Conn)
+	// inv := invoicer.NewInvoicerClient(grpc_client.Conn)
 
-	message := invoicer.CreateRequest{
-		From: from,
-		To:   request.To.String(),
-		Amount: &invoicer.Amount{
-			Amount:   int64(request.Amount),
-			Currency: "USD",
-		},
-	}
+	// message := invoicer.CreateRequest{
+	// 	From: from,
+	// 	To:   request.To.String(),
+	// 	Amount: &invoicer.Amount{
+	// 		Amount:   int64(request.Amount),
+	// 		Currency: "USD",
+	// 	},
+	// }
 
-	res, err := inv.Create(context.Background(), &message)
+	// res, err := inv.Create(context.Background(), &message)
 
-	if err != nil {
-		sendError(c, http.StatusInternalServerError, err.Error())
-	}
+	// if err != nil {
+	// 	sendError(c, http.StatusInternalServerError, err.Error())
+	// }
 
-	sendSuccess(c, http.StatusOK, res)
+	sendSuccess(c, http.StatusOK, nil)
 
 }

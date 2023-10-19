@@ -10,3 +10,7 @@ type User struct {
 	WalletID uuid.UUID `gorm:"type:uuid;not null" json:"wallet_id"`
 	Wallet   Wallet    `gorm:"foreignKey:WalletID" json:"wallet"`
 }
+
+func (u *User) TableName() string {
+	return "users"
+}

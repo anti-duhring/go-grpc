@@ -13,7 +13,7 @@ generate_grpc:
 	--go_opt=paths=source_relative \
 	--go-grpc_out=. \
 	--go-grpc_opt=paths=source_relative \
-	internal/invoicer/invoicer.proto
+	internal/wallet/wallet.proto
 
 run_gateway:
 	go run cmd/gateway/main.go
@@ -34,4 +34,4 @@ build: build_gateway build_ecommerce
 dockerbuild: build
 	docker compose down
 	docker compose build
-	docker compose up  
+	docker compose up -d

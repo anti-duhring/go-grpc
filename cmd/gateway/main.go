@@ -5,8 +5,7 @@ import (
 	"net"
 	"os"
 
-	grpcserver "github.com/anti-duhring/go-grpc/internal/grpc_server"
-	"github.com/anti-duhring/go-grpc/internal/invoicer"
+	"github.com/anti-duhring/go-grpc/internal/wallet"
 	"google.golang.org/grpc"
 )
 
@@ -25,10 +24,10 @@ func main() {
 	}
 
 	registrar := grpc.NewServer()
-	service := &invoicer.Server{}
+	service := &wallet.Server{}
 
 	fmt.Printf("starting server on port %v...", port)
-	invoicer.RegisterInvoicerServer(registrar, service)
+	wallet.RegisterWalletServiceServer(registrar, service)
 
 	err = registrar.Serve(listener)
 	if err != nil {
@@ -36,9 +35,4 @@ func main() {
 		panic(err)
 	}
 
-	err = grpcserver.Initialize()
-	if err != nil {
-		fmt.Printf("cannot initialize database: %s", err)
-		panic(err)
-	}
 }
