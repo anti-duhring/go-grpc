@@ -127,11 +127,24 @@ func TransferMoney(c *gin.Context) {
 		return
 	}
 
+	fromUser := schema.User{}
+	toUser := schema.User{}
+
+	if err := db.Client.Table(fromUser.TableName()).Preload("Wallet").Where("id = ?", from).First(&fromUser).Error; err != nil {
+		sendError(c, http.StatusInternalServerError, err.Error())
+		return
+	}
+
+	if err := db.Client.Table(toUser.TableName()).Preload("Wallet").Where("id = ?", request.To).First(&toUser).Error; err != nil {
+		sendError(c, http.StatusInternalServerError, err.Error())
+		return
+	}
+
 	w := wallet.NewWalletServiceClient(grpc_client.Conn)
 
 	message := wallet.TransferRequest{
-		From:   from,
-		To:     request.To.String(),
+		From:   fromUser.WalletID.String(),
+		To:     toUser.WalletID.String(),
 		Amount: float32(request.Amount),
 	}
 
