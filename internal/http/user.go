@@ -42,6 +42,14 @@ func (t *TransferMoneyRequest) Validate() error {
 	return nil
 }
 
+// @Summary			Get user balance
+// @Description		Show a ser balance
+// @Tags			user
+// @Accept			json
+// @Produce			json
+// @Param 			id path string true "User ID (UUID)"
+// @Success			200
+// @Router			/user/{id}/balance [get]
 func GetUserBalance(c *gin.Context) {
 	id := c.Param("id")
 
@@ -60,6 +68,14 @@ func GetUserBalance(c *gin.Context) {
 	sendSuccess(c, http.StatusOK, gin.H{"balance": user.Wallet.Balance})
 }
 
+// @Summary			Create a new user
+// @Description		Create a new user
+// @Tags			user
+// @Accept			json
+// @Produce			json
+// @Param 			data body CreateUserRequest true "body data"
+// @Success			201
+// @Router			/user [post]
 func CreateUser(c *gin.Context) {
 	request := CreateUserRequest{}
 
@@ -108,6 +124,15 @@ func CreateUser(c *gin.Context) {
 	sendSuccess(c, http.StatusCreated, user)
 }
 
+// @Summary			Transfer money
+// @Description		Transfer money from an user to another one
+// @Tags			user
+// @Accept			json
+// @Produce			json
+// @Param 			id path string true "User ID (UUID)"
+// @Param 			data body TransferMoneyRequest true "body data"
+// @Success			200
+// @Router			/user/{id}/transfer [post]
 func TransferMoney(c *gin.Context) {
 	from := c.Param("id")
 	request := TransferMoneyRequest{}

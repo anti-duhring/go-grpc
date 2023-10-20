@@ -1,0 +1,81 @@
+definitions:
+  http.CreateUserRequest:
+    properties:
+      name:
+        type: string
+    type: object
+  http.TransferMoneyRequest:
+    properties:
+      amount:
+        type: number
+      to:
+        type: string
+    type: object
+info:
+  contact: {}
+paths:
+  /user:
+    post:
+      consumes:
+      - application/json
+      description: Create a new user
+      parameters:
+      - description: body data
+        in: body
+        name: data
+        required: true
+        schema:
+          $ref: '#/definitions/http.CreateUserRequest'
+      produces:
+      - application/json
+      responses:
+        "201":
+          description: Created
+      summary: Create a new user
+      tags:
+      - user
+  /user/{id}/balance:
+    get:
+      consumes:
+      - application/json
+      description: Show a ser balance
+      parameters:
+      - description: User ID (UUID)
+        in: path
+        name: id
+        required: true
+        type: string
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+      summary: Get user balance
+      tags:
+      - user
+  /user/{id}/transfer:
+    post:
+      consumes:
+      - application/json
+      description: Transfer money from an user to another one
+      parameters:
+      - description: User ID (UUID)
+        in: path
+        name: id
+        required: true
+        type: string
+      - description: body data
+        in: body
+        name: data
+        required: true
+        schema:
+          $ref: '#/definitions/http.TransferMoneyRequest'
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+      summary: Transfer money
+      tags:
+      - user
+swagger: "2.0"

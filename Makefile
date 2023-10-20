@@ -7,6 +7,9 @@ GATEWAY_PATH=cmd/gateway
 ECOMMERCE_NAME=ecommerce
 ECOMMERCE_PATH=cmd/ecommerce
 
+docs:
+	swag init -g ./$(ECOMMERCE_PATH)/main.go -o ./internal/docs
+
 generate_grpc:
 	protoc \
 	--go_out=. \
